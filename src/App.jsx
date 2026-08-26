@@ -1,71 +1,37 @@
-import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import VideoProcessor from './components/VideoProcessor';
+import ConfigPanel from './components/ConfigPanel';
 import PlatformManager from './components/PlatformManager';
+import ProgressBar from './components/ProgressBar';
 import ResultDisplay from './components/ResultDisplay';
-import usuarioService from './api/services/usuarioService';
-import './styles/App.css';
-import './styles/components.css';
+import './App.css';
 
 function App() {
-  const [resultado, setResultado] = useState(null);
-  const [usuario, setUsuario] = useState(usuarioService.getUsuarioLogado());
-
-  const handleProcessComplete = (result) => {
-    setResultado(result);
-  };
-
-  const handleLogin = async () => {
-    // Simular login
-    const user = { id: 1, nome: 'Usuário Teste', email: 'teste@email.com' };
-    localStorage.setItem('usuario', JSON.stringify(user));
-    setUsuario(user);
-  };
-
-  const handleLogout = () => {
-    usuarioService.logout();
-    setUsuario(null);
-  };
-
   return (
-    <div className="app">
-      <header className="header">
-        <h1>🎬 Clipador Profissional</h1>
-        <p>Cole a URL e deixe a mágica acontecer!</p>
-        
-        <div className="user-info">
-          {usuario ? (
-            <div>
-              <span>👤 {usuario.nome}</span>
-              <button onClick={handleLogout} className="btn-logout">Sair</button>
-            </div>
-          ) : (
-            <button onClick={handleLogin} className="btn-login">Entrar</button>
-          )}
-        </div>
-      </header>
-
-      <div className="dashboard">
-        <div className="main-area">
-          <VideoProcessor onProcessComplete={handleProcessComplete} />
-          <ResultDisplay resultado={resultado} />
-        </div>
-
-        <div className="side-panel">
-          <PlatformManager />
-          
-          <div className="info-box">
-            <h3>💡 Como funciona</h3>
-            <ol>
-              <li>Cole a URL do YouTube</li>
-              <li>Configure o clipe</li>
-              <li>Conecte suas plataformas</li>
-              <li>Clique em "Criar Clipe"</li>
-              <li>O sistema faz tudo automaticamente!</li>
-            </ol>
-          </div>
-        </div>
+    <BrowserRouter>
+      <div className="app-container">
+        <header>
+          <h1>🎬 Clipador Profissional</h1>
+        </header>
+        <main>
+          <Routes>
+            <Route path="/" element={
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                  <VideoProcessor />
+                  <ConfigPanel />
+                </div>
+                <div>
+                  <PlatformManager />
+                  <ProgressBar />
+                  <ResultDisplay />
+                </div>
+              </div>
+            } />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </BrowserRouter>
   );
 }
 
